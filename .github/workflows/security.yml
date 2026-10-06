@@ -4,8 +4,14 @@ on:
   push:
   pull_request:
 
+permissions:
+  contents: read
+  security-events: write
+
 jobs:
+
   test:
+    name: Tests Python
     runs-on: ubuntu-latest
 
     steps:
@@ -20,3 +26,20 @@ jobs:
 
       - name: Vérifier l'application
         run: python -m py_compile appli.py
+
+
+  codeql:
+    name: Analyse CodeQL
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+
+      - name: Initialiser CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: python
+
+      - name: Analyser avec CodeQL
+        uses: github/codeql-action/analyze@v3
